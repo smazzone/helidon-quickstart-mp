@@ -1,0 +1,35 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: helidon-metrics 
+  labels:
+    app: helidon-metrics
+  annotations:
+    prometheus.io/scrape: 'true' 
+spec:
+  type: NodePort
+  selector:
+    app: helidon-metrics
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: http
+---
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: helidon-metrics
+spec:
+  replicas: 1 
+  template:
+    metadata:
+      labels:
+        app: helidon-metrics
+        version: v1
+    spec:
+      containers:
+        - name: helidon-metrics
+          image: helidon-metrics-mp
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
