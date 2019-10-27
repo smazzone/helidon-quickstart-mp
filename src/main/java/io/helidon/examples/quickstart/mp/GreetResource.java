@@ -29,8 +29,11 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.glassfish.jersey.server.Uri;
 
 /**
  * A simple JAX-RS resource to greet you. Examples:
@@ -49,6 +52,9 @@ import javax.ws.rs.core.Response;
 @Path("/greet")
 @RequestScoped
 public class GreetResource {
+
+    @Uri("http://localhost:8081/greet")
+    private WebTarget target; 
 
     private static final JsonBuilderFactory JSON = Json.createBuilderFactory(Collections.emptyMap());
 
@@ -118,6 +124,12 @@ public class GreetResource {
 
         greetingProvider.setMessage(newGreeting);
         return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
+    @GET
+    @Path("/outbound") 
+    public JsonObject outbound() {
+      return target.request().accept(MediaType.APPLICATION_JSON_TYPE).get(JsonObject.class);
     }
 
     private JsonObject createResponse(String who) {

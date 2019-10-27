@@ -21,10 +21,12 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.opentracing.Traced;
 
 /**
  * Provider for greeting message.
  */
+@Traced
 @ApplicationScoped
 public class GreetingProvider {
     private final AtomicReference<String> message = new AtomicReference<>();
@@ -39,7 +41,14 @@ public class GreetingProvider {
         this.message.set(message);
     }
 
+
     String getMessage() {
+        try {
+            Thread.sleep(130);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         return message.get();
     }
 
